@@ -8,7 +8,7 @@ import { Icon } from '@mdi/react';
 import { mdiClose, mdiChevronRight, mdiChevronLeft } from '@mdi/js';
 import RVD from 'react-virtual-dom';
 import $ from 'jquery';
-import './aio-popup.css';
+import './index.css';
 export default class AIOPopup {
   constructor(_obj = {}) {
     _defineProperty(this, "render", () => {

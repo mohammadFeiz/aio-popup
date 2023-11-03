@@ -1,6 +1,6 @@
 {
   "name": "aio-popup",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "handle all types of popup and modals in react",
   "main": "index.js",
   "scripts": {
