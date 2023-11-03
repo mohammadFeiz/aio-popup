@@ -1,0 +1,37 @@
+{
+  "name": "aio-popup",
+  "version": "1.0.0",
+  "description": "handle all types of popup and modals in react",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohammadFeiz/aio-popup.git"
+  },
+  "dependencies": {
+    "@mdi/js": "^7.0.96",
+    "@mdi/react": "^1.6.1",
+    "jquery": "^3.6.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "react-virtual-dom": "^4.0.1"
+  },
+  "keywords": [
+    "popup",
+    "modal",
+    "snakebar",
+    "alert",
+    "confirm",
+    "prompt",
+    "popover"
+  ],
+  "author": "mohammad sharif feiz feiz.ms@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mohammadFeiz/aio-popup/issues"
+  },
+  "homepage": "https://github.com/mohammadFeiz/aio-popup#readme"
+}
