@@ -934,7 +934,7 @@ function Align(dom, target, config = {}) {
       let left = offset.left - window.pageXOffset;
       let top = offset.top - window.pageYOffset;
       if (pageSelector && type !== 'page') {
-        let page = dom.parents(pageSelector);
+        let page = $(pageSelector);
         try {
           let {
             left: l,
@@ -958,7 +958,7 @@ function Align(dom, target, config = {}) {
       };
     },
     getPageLimit(dom) {
-      let page = pageSelector ? dom.parents(pageSelector) : undefined;
+      let page = pageSelector ? $(pageSelector) : undefined;
       page = Array.isArray(page) && page.length === 0 ? undefined : page;
       let bodyWidth = window.innerWidth;
       let bodyHeight = window.innerHeight;
