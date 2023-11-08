@@ -1,4 +1,3 @@
-function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
@@ -8,29 +7,34 @@ import { Icon } from '@mdi/react';
 import { mdiClose, mdiChevronRight, mdiChevronLeft } from '@mdi/js';
 import RVD from 'react-virtual-dom';
 import $ from 'jquery';
-import './index.css';
+import './aio-popup.css';
+import { jsx as _jsx } from "react/jsx-runtime";
+import { Fragment as _Fragment } from "react/jsx-runtime";
+import { jsxs as _jsxs } from "react/jsx-runtime";
 export default class AIOPopup {
   constructor(_obj = {}) {
     _defineProperty(this, "render", () => {
-      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Popups, {
-        rtl: this.rtl,
-        getActions: ({
-          addModal,
-          removeModal,
-          getModals
-        }) => {
-          this._addModal = addModal;
-          this._removeModal = removeModal;
-          this._getModals = getModals;
-        }
-      }), /*#__PURE__*/React.createElement(AIOSnackeBar, {
-        rtl: this.rtl,
-        getActions: ({
-          add
-        }) => {
-          this._addSnakebar = add;
-        }
-      }));
+      return /*#__PURE__*/_jsxs(_Fragment, {
+        children: [/*#__PURE__*/_jsx(Popups, {
+          rtl: this.rtl,
+          getActions: ({
+            addModal,
+            removeModal,
+            getModals
+          }) => {
+            this._addModal = addModal;
+            this._removeModal = removeModal;
+            this._getModals = getModals;
+          }
+        }), /*#__PURE__*/_jsx(AIOSnackeBar, {
+          rtl: this.rtl,
+          getActions: ({
+            add
+          }) => {
+            this._addSnakebar = add;
+          }
+        })]
+      });
     });
     _defineProperty(this, "getModals", () => this._getModals());
     _defineProperty(this, "addModal", (obj = {}, animate = true) => {
@@ -145,21 +149,22 @@ class Popups extends Component {
       if (!modals.length) {
         return;
       }
+      if (arg === 'last') {
+        arg = modals[modals.length - 1].id;
+      }
       this.mount(arg, false);
       setTimeout(() => {
-        let modal = arg === 'last' ? modals[modals.length - 1] : modals.find(o => o.id === arg);
+        let {
+          modals
+        } = this.state;
+        console.log(modals);
+        let modal = modals.find(o => o.id === arg);
         if (modal.onClose) {
           modal.onClose();
         }
-        if (arg === 'last') {
-          this.change({
-            modals: modals.slice(0, modals.length - 1)
-          });
-        } else {
-          this.change({
-            modals: modals.filter(o => o.id !== arg)
-          });
-        }
+        this.change({
+          modals: modals.filter(o => o.id !== arg)
+        });
       }, animate ? 300 : 0);
     }
   }
@@ -227,13 +232,15 @@ class Popups extends Component {
         //use for remove lastModal by esc keyboard
         onMount: () => this.mount(id, true)
       };
-      return /*#__PURE__*/React.createElement(Popup, _extends({
-        key: id
-      }, props));
+      return /*#__PURE__*/_jsx(Popup, {
+        ...props
+      }, id);
     });
   }
   render() {
-    return /*#__PURE__*/React.createElement(React.Fragment, null, this.getModals());
+    return /*#__PURE__*/_jsx(_Fragment, {
+      children: this.getModals()
+    });
   }
 }
 class Popup extends Component {
@@ -316,7 +323,7 @@ class Popup extends Component {
       return false;
     }
     return {
-      html: /*#__PURE__*/React.createElement(ModalHeader, {
+      html: /*#__PURE__*/_jsx(ModalHeader, {
         rtl: rtl,
         header: header,
         handleClose: () => this.onClose()
@@ -329,7 +336,7 @@ class Popup extends Component {
     } = this.props;
     return {
       flex: 1,
-      html: /*#__PURE__*/React.createElement(ModalBody, {
+      html: /*#__PURE__*/_jsx(ModalBody, {
         body: body,
         handleClose: this.onClose.bind(this),
         updatePopoverStyle: () => this.updatePopoverStyle()
@@ -354,7 +361,9 @@ class Popup extends Component {
       handleClose
     };
     return {
-      html: /*#__PURE__*/React.createElement(ModalFooter, props)
+      html: /*#__PURE__*/_jsx(ModalFooter, {
+        ...props
+      })
     };
   }
   getBackDropClassName() {
@@ -468,25 +477,27 @@ class Popup extends Component {
     };
     let className = 'aio-popup' + (rtl ? ' rtl' : ' ltr') + (!mounted ? ' not-mounted' : '') + (attrs.className ? ' ' + attrs.className : '');
     let ev = "ontouchstart" in document.documentElement ? 'onTouchStart' : 'onMouseDown';
-    return /*#__PURE__*/React.createElement("div", _extends({}, backdropProps, {
+    return /*#__PURE__*/_jsx("div", {
+      ...backdropProps,
       ref: this.backdropDom,
       onKeyDown: this.keyDown.bind(this),
-      tabIndex: 0
-    }), /*#__PURE__*/React.createElement(RVD, {
-      layout: {
-        attrs: {
-          ...attrs,
-          ref: this.dom,
-          style: undefined,
-          className: undefined,
-          'data-uniq-id': this.dui,
-          [ev]: this.mouseDown.bind(this)
-        },
-        className,
-        style,
-        column: [this.header_layout(), this.body_layout(), this.footer_layout()]
-      }
-    }));
+      tabIndex: 0,
+      children: /*#__PURE__*/_jsx(RVD, {
+        layout: {
+          attrs: {
+            ...attrs,
+            ref: this.dom,
+            style: undefined,
+            className: undefined,
+            'data-uniq-id': this.dui,
+            [ev]: this.mouseDown.bind(this)
+          },
+          className,
+          style,
+          column: [this.header_layout(), this.body_layout(), this.footer_layout()]
+        }
+      })
+    });
   }
 }
 function ModalHeader({
@@ -529,7 +540,7 @@ function ModalHeader({
       };
     }
     return {
-      html: /*#__PURE__*/React.createElement(Icon, {
+      html: /*#__PURE__*/_jsx(Icon, {
         path: path,
         size: 1
       }),
@@ -580,7 +591,10 @@ function ModalHeader({
           close: handleClose
         });
         return {
-          html: /*#__PURE__*/React.createElement("button", attrs, text),
+          html: /*#__PURE__*/_jsx("button", {
+            ...attrs,
+            children: text
+          }),
           align: 'vh'
         };
       })
@@ -591,7 +605,7 @@ function ModalHeader({
       return false;
     }
     return {
-      html: /*#__PURE__*/React.createElement(Icon, {
+      html: /*#__PURE__*/_jsx(Icon, {
         path: mdiClose,
         size: 0.8
       }),
@@ -602,7 +616,7 @@ function ModalHeader({
   }
   let className = 'aio-popup-header' + (attrs.className ? ' ' + attrs.className : '');
   let style = attrs.style;
-  return /*#__PURE__*/React.createElement(RVD, {
+  return /*#__PURE__*/_jsx(RVD, {
     layout: {
       attrs,
       className,
@@ -627,9 +641,11 @@ function ModalBody(props) {
   useEffect(() => {
     updatePopoverStyle();
   }, [content]);
-  return /*#__PURE__*/React.createElement("div", _extends({}, attrs, {
-    className: 'aio-popup-body' + (attrs.className ? ' ' + attrs.className : '')
-  }), typeof render === 'function' && content);
+  return /*#__PURE__*/_jsx("div", {
+    ...attrs,
+    className: 'aio-popup-body' + (attrs.className ? ' ' + attrs.className : ''),
+    children: typeof render === 'function' && content
+  });
 }
 function ModalFooter({
   type,
@@ -665,7 +681,10 @@ function ModalFooter({
           close: handleClose
         });
         return {
-          html: /*#__PURE__*/React.createElement("button", attrs, text),
+          html: /*#__PURE__*/_jsx("button", {
+            ...attrs,
+            children: text
+          }),
           align: 'vh'
         };
       })
@@ -673,7 +692,7 @@ function ModalFooter({
   }
   let className = 'aio-popup-footer' + (attrs.className ? ' ' + attrs.className : '');
   let style = attrs.style;
-  return /*#__PURE__*/React.createElement(RVD, {
+  return /*#__PURE__*/_jsx(RVD, {
     layout: {
       className,
       style,
@@ -793,15 +812,16 @@ class AIOSnackeBar extends Component {
     let {
       rtl = false
     } = this.props;
-    return /*#__PURE__*/React.createElement(React.Fragment, null, items.map((item, i) => {
-      return /*#__PURE__*/React.createElement(SnackebarItem, _extends({
-        key: item.id,
-        rtl: rtl
-      }, item, {
-        index: i,
-        onRemove: id => this.remove(id)
-      }));
-    }));
+    return /*#__PURE__*/_jsx(_Fragment, {
+      children: items.map((item, i) => {
+        return /*#__PURE__*/_jsx(SnackebarItem, {
+          rtl: rtl,
+          ...item,
+          index: i,
+          onRemove: id => this.remove(id)
+        }, item.id);
+      })
+    });
   }
 }
 class SnackebarItem extends Component {
@@ -833,34 +853,36 @@ class SnackebarItem extends Component {
     setTimeout(() => onRemove(id), 200);
   }
   info_svg() {
-    return /*#__PURE__*/React.createElement("svg", {
+    return /*#__PURE__*/_jsx("svg", {
       viewBox: "0 0 24 24",
       role: "presentation",
       style: {
         width: '1.2rem',
         height: '1.2rem'
-      }
-    }, /*#__PURE__*/React.createElement("path", {
-      d: "M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z",
-      style: {
-        fill: 'currentcolor'
-      }
-    }));
+      },
+      children: /*#__PURE__*/_jsx("path", {
+        d: "M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z",
+        style: {
+          fill: 'currentcolor'
+        }
+      })
+    });
   }
   success_svg() {
-    return /*#__PURE__*/React.createElement("svg", {
+    return /*#__PURE__*/_jsx("svg", {
       viewBox: "0 0 24 24",
       role: "presentation",
       style: {
         width: '1.2rem',
         height: '1.2rem'
-      }
-    }, /*#__PURE__*/React.createElement("path", {
-      d: "M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z",
-      style: {
-        fill: 'currentcolor'
-      }
-    }));
+      },
+      children: /*#__PURE__*/_jsx("path", {
+        d: "M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z",
+        style: {
+          fill: 'currentcolor'
+        }
+      })
+    });
   }
   getSvg(type) {
     return type === 'error' || type === 'warning' || type === 'info' ? this.info_svg() : this.success_svg();
@@ -887,36 +909,44 @@ class SnackebarItem extends Component {
       rtl
     } = this.props;
     let bottom = this.getBottom(index);
-    return /*#__PURE__*/React.createElement("div", {
+    return /*#__PURE__*/_jsx("div", {
       onClick: () => this.remove(),
       className: 'aio-popup-snakebar-item-container' + (mounted ? ' mounted' : ''),
       style: {
         bottom,
         direction: rtl ? 'rtl' : undefined
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      className: `aio-popup-snakebar-item aio-popup-snakebar-item-${type}`
-    }, /*#__PURE__*/React.createElement("div", {
-      className: `aio-popup-snakebar-item-icon`
-    }, this.getSvg(type)), /*#__PURE__*/React.createElement("div", {
-      className: "aio-popup-snakebar-item-text"
-    }, /*#__PURE__*/React.createElement("div", null, text), !!subtext && /*#__PURE__*/React.createElement("div", {
-      className: "aio-popup-snakebar-item-subtext"
-    }, subtext)), !!action.text && /*#__PURE__*/React.createElement("button", {
-      className: "aio-popup-snakebar-item-action",
-      onClick: e => {
-        e.stopPropagation();
-        action.onClick();
-        this.remove();
-      }
-    }, action.text), /*#__PURE__*/React.createElement("div", {
-      className: `aio-popup-snakebar-bar`,
-      style: {
-        transition: `${time}s linear`,
-        right: rtl ? 0 : 'unset',
-        left: rtl ? 'unset' : 0
-      }
-    })));
+      },
+      children: /*#__PURE__*/_jsxs("div", {
+        className: `aio-popup-snakebar-item aio-popup-snakebar-item-${type}`,
+        children: [/*#__PURE__*/_jsx("div", {
+          className: `aio-popup-snakebar-item-icon`,
+          children: this.getSvg(type)
+        }), /*#__PURE__*/_jsxs("div", {
+          className: "aio-popup-snakebar-item-text",
+          children: [/*#__PURE__*/_jsx("div", {
+            children: text
+          }), !!subtext && /*#__PURE__*/_jsx("div", {
+            className: "aio-popup-snakebar-item-subtext",
+            children: subtext
+          })]
+        }), !!action.text && /*#__PURE__*/_jsx("button", {
+          className: "aio-popup-snakebar-item-action",
+          onClick: e => {
+            e.stopPropagation();
+            action.onClick();
+            this.remove();
+          },
+          children: action.text
+        }), /*#__PURE__*/_jsx("div", {
+          className: `aio-popup-snakebar-bar`,
+          style: {
+            transition: `${time}s linear`,
+            right: rtl ? 0 : 'unset',
+            left: rtl ? 'unset' : 0
+          }
+        })]
+      })
+    });
   }
 }
 //id,onClose,backdrop,getTarget,position,fixStyle,attrs,fitHorizontal,pageSelector,rtl,body
