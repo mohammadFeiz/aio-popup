@@ -7,7 +7,7 @@ import { Icon } from '@mdi/react';
 import { mdiClose, mdiChevronRight, mdiChevronLeft } from '@mdi/js';
 import RVD from 'react-virtual-dom';
 import $ from 'jquery';
-import './aio-popup.css';
+import './index.css';
 import { jsx as _jsx } from "react/jsx-runtime";
 import { Fragment as _Fragment } from "react/jsx-runtime";
 import { jsxs as _jsxs } from "react/jsx-runtime";
