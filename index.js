@@ -157,8 +157,10 @@ class Popups extends Component {
         let {
           modals
         } = this.state;
-        console.log(modals);
         let modal = modals.find(o => o.id === arg);
+        if (!modal) {
+          return;
+        }
         if (modal.onClose) {
           modal.onClose();
         }
