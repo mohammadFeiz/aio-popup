@@ -71,7 +71,7 @@
 .aio-popup-position-right{
   justify-content:right;
 }
-.aio-popup-position-right .aio-popup{
+.aio-popup-position-right > .aio-popup{
   height:100%;
   max-width:90vh;
   right:0;
