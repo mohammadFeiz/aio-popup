@@ -1,11 +1,12 @@
 {
   "name": "aio-popup",
-  "version": "3.2.1",
+  "version": "3.3.0",
   "description": "handle all types of popup and modals in react",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "types":"index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mohammadFeiz/aio-popup.git"
@@ -13,8 +14,7 @@
   "dependencies": {
     "@mdi/js": "^7.0.96",
     "@mdi/react": "^1.6.1",
-    "jquery": "^3.6.1",
-    "react-virtual-dom": "latest"
+    "jquery": "^3.6.1"
   },
   "keywords": [
     "popup",

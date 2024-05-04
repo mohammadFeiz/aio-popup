@@ -1,16 +1,1290 @@
-/**version 3.2.0 */
-function _defineProperty(t,e,o){return(e=_toPropertyKey(e))in t?Object.defineProperty(t,e,{value:o,enumerable:!0,configurable:!0,writable:!0}):t[e]=o,t}function _toPropertyKey(t){var e=_toPrimitive(t,"string");return"symbol"==typeof e?e:String(e)}function _toPrimitive(t,e){if("object"!=typeof t||null===t)return t;var o=t[Symbol.toPrimitive];if(void 0!==o){var i=o.call(t,e||"default");if("object"!=typeof i)return i;throw TypeError("@@toPrimitive must return a primitive value.")}return("string"===e?String:Number)(t)}import t,{Component as e,createRef as o,useEffect as i}from"react";import*as s from"react-dom/server";import{Icon as r}from"@mdi/react";import{mdiClose as a,mdiChevronRight as l,mdiChevronLeft as n}from"@mdi/js";import p from"react-virtual-dom";import d from"jquery";import"./index.css";import{jsx as h}from"react/jsx-runtime";import{Fragment as m}from"react/jsx-runtime";import{jsxs as c}from"react/jsx-runtime";export default class u{constructor(t={}){_defineProperty(this,"render",()=>c(m,{children:[h(Popups,{rtl:this.rtl,getActions:({addModal:t,removeModal:e,getModals:o})=>{this._addModal=t,this._removeModal=e,this._getModals=o}}),h(AIOSnackeBar,{rtl:this.rtl,getActions:({add:t})=>{this._addSnakebar=t}})]})),_defineProperty(this,"getModals",()=>this._getModals()),_defineProperty(this,"addModal",(t={},e=!0)=>{void 0===t.id&&(t.id="popup"+Math.round(1e6*Math.random())),this._addModal(t,e)}),_defineProperty(this,"addConfirm",t=>{let{title:e,subtitle:o,text:i,submitText:s="بله",canselText:r="خیر",onSubmit:a,onCansel:l=()=>{},attrs:n={}}=t,p="aio-popup-confirm";n.className&&(p+=" "+n.className);let d={position:"center",attrs:{...n,className:p},header:{title:e,subtitle:o},backdrop:{attrs:{className:"rsa-backdrop"}},body:{render:()=>i},footer:{buttons:[[r,{onClick:()=>{l(),this.removeModal()}}],[s,{onClick:async()=>{!1!==await a()&&this.removeModal()},className:"active"}]]}};this.addModal(d)}),_defineProperty(this,"addPrompt",t=>{let{title:e,subtitle:o,text:i,submitText:s="تایید",canselText:r="بستن",onSubmit:a,onCansel:l=()=>{},attrs:n={}}=t,p="aio-popup-prompt";n.className&&(p+=" "+n.className);let d={position:"center",attrs:{...n,className:p},state:{temp:""},header:{title:e,subtitle:o},backdrop:{attrs:{className:"rsa-backdrop"}},body:{render:({state:t,setState:e})=>h("textarea",{placeholder:i,value:t.temp,onChange:t=>e({temp:t.target.value})})},footer:{buttons:[[r,{onClick:()=>{l(),this.removeModal()}}],[s,({state:t,setState:e})=>({onClick:async({state:t})=>{!1!==await a(t.temp)?this.removeModal():e({temp:""})},disabled:!t.temp,className:"active"})]]}};this.addModal(d)}),_defineProperty(this,"removeModal",(t,e=!0)=>{this._removeModal&&this._removeModal(t,e)}),_defineProperty(this,"addAlert",(t={})=>{let{icon:e,type:o="",text:i="",subtext:s="",time:r=10,className:a,closeText:l="بستن"}=t;Alert({icon:e,type:o,text:i,subtext:s,time:r,className:a,closeText:l})}),_defineProperty(this,"addSnakebar",(t={})=>{let{text:e,index:o,type:i,subtext:s,action:r={},time:a=6,rtl:l,onClose:n}=t;this._addSnakebar({text:e,index:o,type:i,subtext:s,action:r,time:a,rtl:l,onClose:n})}),this.rtl=t.rtl}};class Popups extends e{constructor(t){super(t),this.dom=o();let{getActions:e=()=>{}}=t;this.state={modals:[]},e({removeModal:this.removeModal.bind(this),addModal:this.addModal.bind(this),getModals:()=>[...this.state.modals]})}change(t){let{onChange:e=()=>{}}=this.props;for(let o in t)this.state[o]=t[o];this.setState(t,()=>e({...this.state}))}addModal(t,e=!0){if("object"!=typeof t){console.error("aio-popup => addModal modal parameter to add is not an object");return}if(void 0===t.id){console.error("aio-popup => addModal missing modal id property");return}let{modals:o}=this.state,i=o.filter(({id:e})=>e!==t.id);i.push({...t,mounted:"popover"!==t.position&&!e}),this.change({modals:i})}async removeModal(t="last",e=!0){if("all"===t)this.change({modals:[]});else{let{modals:o}=this.state;if(!o.length)return;"last"===t&&(t=o[o.length-1].id),this.mount(t,!1),setTimeout(()=>{let{modals:e}=this.state,o=e.find(e=>e.id===t);o&&(o.onClose&&o.onClose(),this.change({modals:e.filter(e=>e.id!==t)}))},e?300:0)}}mount(t="last",e){try{let{modals:o}=this.state;"last"===t&&(t=o[o.length-1].id);let i=o.map(o=>o.id===t?{...o,mounted:e}:o);this.change({modals:i})}catch{return}}getModals(){let{modals:t}=this.state;return t.length?t.map((e,o)=>{let{popover:i,position:s,text:r,onSubmit:a,rtl:l=this.props.rtl,attrs:n={},backdrop:p,header:d,state:m,footer:c,closeType:u,body:_,id:$,mounted:f}=e;return h(Popup,{id:$,backdrop:p,footer:c,text:r,onSubmit:a,header:d,popover:i,state:m,position:s,rtl:l,attrs:n,closeType:u,body:_,index:o,isLast:o===t.length-1,mounted:f,onClose:()=>this.removeModal($),removeModal:this.removeModal.bind(this),onMount:()=>this.mount($,!0)},$)}):null}render(){return h(m,{children:this.getModals()})}}class Popup extends e{constructor(t){super(t),this.dom=o(),this.backdropDom=o(),this.state={popoverStyle:void 0,state:t.state}}async onClose(t){let{onClose:e}=this.props;e(t)}componentWillUnmount(){d(window).unbind("click",this.handleBackClick)}updatePopoverStyle(){let{position:t}=this.props;if("popover"===t){let e=this.getPopoverStyle();JSON.stringify(e)!==JSON.stringify(this.state.popoverStyle)&&this.setState({popoverStyle:e})}}componentDidMount(){let{popover:t={},position:e}=this.props;if(setTimeout(()=>{let{mounted:t,onMount:o}=this.props;this.setState({popoverStyle:"popover"===e?this.getPopoverStyle():{}}),t||o()},0),t.getTarget){this.dui="a"+Math.round(1e7*Math.random());t.getTarget().attr("data-uniq-id",this.dui)}d(window).unbind("click",this.handleBackClick),d(window).bind("click",d.proxy(this.handleBackClick,this))}handleBackClick(t){if(!this.dui)return;let{position:e="fullscreen"}=this.props,o=d(t.target);"popover"===e&&o.attr("data-uniq-id")!==this.dui&&!o.parents(`[data-uniq-id=${this.dui}]`).length&&this.onClose()}header_layout(){let{rtl:t,header:e}=this.props;if("object"!=typeof e)return!1;let{state:o}=this.state;return{html:h(ModalHeader,{rtl:t,header:e,handleClose:t=>this.onClose(t),state:o,setState:t=>this.setState({state:t})}),className:"of-visible"}}body_layout(){let{body:t={}}=this.props,{state:e}=this.state;return{flex:1,html:h(ModalBody,{body:t,state:e,setState:t=>this.setState({state:t}),handleClose:this.onClose.bind(this),updatePopoverStyle:()=>this.updatePopoverStyle()})}}footer_layout(){let{closeText:t,submitText:e,onSubmit:o,footer:i,type:s}=this.props,{state:r}=this.state,a=this.onClose.bind(this);return{html:h(ModalFooter,{closeText:t,submitText:e,onSubmit:o,footer:i,type:s,handleClose:a,state:r,setState:t=>this.setState({state:t})})}}getBackDropClassName(){let{rtl:t,position:e="fullscreen",backdrop:o,mounted:i}=this.props,s="aio-popup-backdrop";return o&&o.attrs&&o.attrs.className&&(s+=" "+o.attrs.className),s+=` aio-popup-position-${e}`,s+=t?" rtl":" ltr",i||(s+=" not-mounted"),s}backClick(t){if(this.isDown)return;t.stopPropagation();let e=d(t.target),{backdrop:o={}}=this.props;!1!==o.close&&e.hasClass("aio-popup-backdrop")&&this.onClose()}getPopoverStyle(){let{popover:t={},rtl:e,attrs:o={}}=this.props,{getTarget:i,pageSelector:s,fitHorizontal:r,fixStyle:a=t=>t}=t;if(!i)return{};let l=i();if(!l||!l.length)return{};let n=d(this.dom.current);return{...Align(n,l,{fixStyle:a,pageSelector:s,fitHorizontal:r,style:o.style,rtl:e}),position:"absolute"}}keyDown(t){let{isLast:e,removeModal:o}=this.props;if(e)27===t.keyCode&&o()}mouseUp(){setTimeout(()=>this.isDown=!1,0)}mouseDown(t){d(window).unbind("mouseup",this.mouseUp),d(window).bind("mouseup",d.proxy(this.mouseUp,this)),this.isDown=!0}render(){let{rtl:t,attrs:e={},backdrop:o={},mounted:i}=this.props,{popoverStyle:s}=this.state,r={...o?o.attrs:{},className:this.getBackDropClassName(),onClick:!1===o?void 0:t=>this.backClick(t)},a={...s,...e.style,flex:"none"},l="aio-popup"+(t?" rtl":" ltr")+(i?"":" not-mounted")+(e.className?" "+e.className:""),n="ontouchstart"in document.documentElement?"onTouchStart":"onMouseDown";return h("div",{...r,ref:this.backdropDom,onKeyDown:this.keyDown.bind(this),tabIndex:0,children:h(p,{layout:{attrs:{...e,ref:this.dom,style:void 0,className:void 0,"data-uniq-id":this.dui,[n]:this.mouseDown.bind(this)},className:l,style:a,column:[this.header_layout(),this.body_layout(),this.footer_layout()]}})})}}function ModalHeader({rtl:t,header:e,handleClose:o,state:i,setState:s}){if("object"!=typeof e)return null;let{title:d,subtitle:m,buttons:c=[],onClose:u,backButton:_,attrs:$={}}=e;function f(){u?u({state:i,setState:s}):o({state:i,setState:s})}let g="aio-popup-header"+($.className?" "+$.className:""),v=$.style;return h(p,{layout:{attrs:$,className:g,style:v,row:[function e(){if(!_||!1===u)return!1;let o,i;return t?(o=l,i={marginLeft:12}):(o=n,i={marginRight:12}),{html:h(r,{path:o,size:1}),align:"vh",onClick:()=>f(),style:i}}(),!!d&&(m?{flex:1,align:"v",column:[{html:d,className:"aio-popup-title"},{html:m,className:"aio-popup-subtitle"}]}:{flex:1,align:"v",html:d,className:"aio-popup-title"}),!!c.length&&{gap:6,align:"vh",row:()=>c.map(([t,e={}])=>{let{onClick:r=()=>{},className:a}=e,l={...e};return l.className="aio-popup-header-button"+(a?" "+a:""),l.onClick=()=>r({close:o,state:i,setState:s}),{html:h("button",{...l,children:t}),align:"vh"}})},!_&&!1!==u&&{html:h(r,{path:a,size:.8}),align:"vh",onClick:()=>f(),className:"aio-popup-header-close-button"}]}})}function ModalBody(t){let{handleClose:e,body:o,updatePopoverStyle:s,state:r,setState:a}=t,{render:l,attrs:n={}}=o,p="function"==typeof l?l({close:e,state:r,setState:a}):l;return i(()=>{s()},[p]),h("div",{...n,className:"aio-popup-body"+(n.className?" "+n.className:""),children:"function"==typeof l&&p})}function ModalFooter({footer:t,handleClose:e,state:o,setState:i}){if("object"!=typeof t)return null;let{attrs:s={},buttons:r=[]}=t,a;return h("div",{className:"aio-popup-footer"+(s.className?" "+s.className:""),style:s.style,children:r.length?r.map(([t,s={}])=>{let r="function"==typeof s?{...s({state:o,setState:i})}:{...s},{onClick:a=()=>{},className:l}=r;return r.className="aio-popup-footer-button"+(l?" "+l:""),r.onClick=()=>a({close:e,state:o,setState:i}),h("button",{...r,children:t})}):null})}function Alert(t={}){let{icon:e,type:o,text:i,subtext:r,time:a,className:l,closeText:n}=t,p={time:0,getId:()=>"aa"+Math.round(1e8*Math.random()),getBarRender:()=>`<div class='aio-popup-time-bar' style="width:${p.time}%;"></div>`,updateBarRender(){d(`.aio-popup-alert-container.${p.id} .aio-popup-time`).html(p.getBarRender())},getRender:()=>`
-      <div class='aio-popup-alert-container ${p.id}${l?"aio-popup"+l:""}'>
-        <div class='aio-popup-alert aio-popup-alert-${o}'>
-          <div class='aio-popup-alert-header'>${p.getIcon()}</div>
-          <div class='aio-popup-alert-body'>
-            <div class='aio-popup-alert-text'>${s.renderToStaticMarkup(i)}</div>
-            <div class='aio-popup-alert-subtext'>${r}</div>
+import React, { Component, createRef, useEffect, useState, isValidElement } from 'react';
+import * as ReactDOMServer from 'react-dom/server';
+import { Icon } from '@mdi/react';
+import { mdiClose, mdiChevronRight, mdiChevronLeft } from '@mdi/js';
+import $ from 'jquery';
+import './index.css';
+import { createElement as _createElement } from "react";
+import { jsx as _jsx } from "react/jsx-runtime";
+import { Fragment as _Fragment } from "react/jsx-runtime";
+import { jsxs as _jsxs } from "react/jsx-runtime";
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+export default class AIOPopup {
+  constructor(obj) {
+    _defineProperty(this, "rtl", void 0);
+    _defineProperty(this, "render", void 0);
+    _defineProperty(this, "addModal", void 0);
+    _defineProperty(this, "addAlert", void 0);
+    _defineProperty(this, "removeModal", void 0);
+    _defineProperty(this, "_removeModal", void 0);
+    _defineProperty(this, "addSnackebar", void 0);
+    _defineProperty(this, "getModals", void 0);
+    _defineProperty(this, "_getModals", void 0);
+    _defineProperty(this, "addConfirm", void 0);
+    _defineProperty(this, "addPrompt", void 0);
+    _defineProperty(this, "popupId", void 0);
+    _defineProperty(this, "isRenderCalled", void 0);
+    let {
+      rtl = false,
+      id
+    } = obj || {};
+    this.isRenderCalled = false;
+    this.rtl = rtl;
+    this.addModal = () => {
+      alert('aio-popup error => missing call AIOPopup instance.render() in your project');
+    };
+    this.removeModal = () => {
+      alert('aio-popup error => missing call AIOPopup instance.render() in your project');
+    };
+    this.addSnackebar = () => {};
+    this._getModals = () => [];
+    this.render = () => {
+      this.isRenderCalled = true;
+      let popupsProps = {
+        rtl,
+        id,
+        getActions: ({
+          addModal,
+          removeModal,
+          getModals
+        }) => {
+          this.addModal = addModal;
+          this._removeModal = removeModal;
+          this._getModals = getModals;
+        }
+      };
+      let snackebarProps = {
+        rtl,
+        getActions: ({
+          add
+        }) => {
+          this.addSnackebar = add;
+        }
+      };
+      return /*#__PURE__*/_jsxs(_Fragment, {
+        children: [/*#__PURE__*/_createElement(Popups, {
+          ...popupsProps,
+          key: id
+        }), /*#__PURE__*/_jsx(Snackebar, {
+          ...snackebarProps
+        })]
+      });
+    };
+    this.addAlert = obj => Alert(obj);
+    this.removeModal = (arg, animate = true) => {
+      if (this._removeModal) {
+        this._removeModal(arg, animate);
+      }
+    };
+    this.getModals = () => {
+      let res = this._getModals();
+      return Array.isArray(res) ? res : [];
+    };
+    this.addConfirm = obj => {
+      let {
+        title,
+        subtitle,
+        text,
+        submitText = 'Yes',
+        canselText = 'No',
+        onSubmit,
+        onCansel = () => {},
+        attrs = {}
+      } = obj;
+      let className = 'aio-popup-confirm';
+      if (attrs.className) {
+        className += ' ' + attrs.className;
+      }
+      let config = {
+        position: 'center',
+        attrs: {
+          ...attrs,
+          className
+        },
+        header: {
+          title,
+          subtitle
+        },
+        backdrop: {
+          attrs: {
+            className: 'rsa-backdrop'
+          }
+        },
+        body: {
+          render: () => text
+        },
+        footer: {
+          buttons: [[canselText, {
+            onClick: () => {
+              onCansel();
+              this.removeModal();
+            }
+          }], [submitText, {
+            onClick: async () => {
+              if (!onSubmit) {
+                return;
+              }
+              let res = await onSubmit();
+              if (res !== false) {
+                this.removeModal();
+              }
+            },
+            className: 'active'
+          }]]
+        }
+      };
+      this.addModal(config);
+    };
+    this.addPrompt = obj => {
+      let {
+        title,
+        subtitle,
+        text,
+        submitText = 'تایید',
+        canselText = 'بستن',
+        onSubmit,
+        onCansel = () => {},
+        attrs = {}
+      } = obj;
+      let className = 'aio-popup-prompt';
+      if (attrs.className) {
+        className += ' ' + attrs.className;
+      }
+      let config = {
+        position: 'center',
+        attrs: {
+          ...attrs,
+          className
+        },
+        state: {
+          temp: ''
+        },
+        header: {
+          title,
+          subtitle
+        },
+        backdrop: {
+          attrs: {
+            className: 'rsa-backdrop'
+          }
+        },
+        body: {
+          render: ({
+            state,
+            setState
+          }) => {
+            return /*#__PURE__*/_jsx("textarea", {
+              placeholder: text,
+              value: state.temp,
+              onChange: e => {
+                if (setState) {
+                  setState({
+                    temp: e.target.value
+                  });
+                }
+              }
+            });
+          }
+        },
+        footer: {
+          buttons: [[canselText, {
+            onClick: () => {
+              onCansel();
+              this.removeModal();
+            }
+          }], [submitText, p => {
+            let {
+              state,
+              setState
+            } = p || {};
+            return {
+              onClick: async p => {
+                if (!onSubmit) {
+                  return;
+                }
+                let {
+                  state
+                } = p;
+                let res = await onSubmit(state.temp);
+                if (res !== false) {
+                  this.removeModal();
+                } else {
+                  setState({
+                    temp: ''
+                  });
+                }
+              },
+              disabled: !state.temp,
+              className: 'active'
+            };
+          }]]
+        }
+      };
+      this.addModal(config);
+    };
+  }
+}
+class Popups extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      modals: []
+    };
+    props.getActions({
+      addModal: this.addModal.bind(this),
+      removeModal: this.removeModal.bind(this),
+      getModals: () => this.state.modals
+    });
+  }
+  change(modals) {
+    let {
+      id
+    } = this.props;
+    let oldModals = [...this.state.modals];
+    let newModals = [...modals];
+    if (id === 'main') {
+      console.log('old modals', oldModals);
+      console.log('new modals', newModals);
+    }
+    this.setState({
+      modals: newModals
+    });
+  }
+  addModal(o) {
+    let {
+      modals
+    } = this.state;
+    if (o.id === undefined) {
+      o.id = 'popup' + Math.round(Math.random() * 1000000);
+    }
+    let newModals = modals.filter(({
+      id
+    }) => id !== o.id);
+    let newModal = o;
+    newModals.push(newModal);
+    this.change(newModals);
+  }
+  async removeModal(arg = 'last', animate = true) {
+    if (arg === 'all') {
+      this.setState({
+        modals: []
+      });
+      return;
+    }
+    let {
+      modals
+    } = this.state;
+    if (!modals.length) {
+      return;
+    }
+    if (arg === 'last') {
+      arg = modals[modals.length - 1].id;
+    }
+    let parentDom = $(`.aio-popup-backdrop[data-id=${arg}]`);
+    let dom = parentDom.find('.aio-popup');
+    parentDom.addClass('not-mounted');
+    dom.addClass('not-mounted');
+    setTimeout(() => {
+      let modal = modals.find(o => o.id === arg);
+      if (!modal) {
+        return;
+      }
+      if (typeof modal.onClose === 'function') {
+        modal.onClose();
+      }
+      let newModals = modals.filter(o => o.id !== arg);
+      this.change(newModals);
+    }, animate ? 300 : 0);
+  }
+  getModals() {
+    let {
+      modals
+    } = this.state;
+    let {
+      rtl
+    } = this.props;
+    return modals.map((modal, i) => {
+      let props = {
+        modal,
+        index: i,
+        isLast: i === modals.length - 1,
+        rtl,
+        onClose: () => this.removeModal(modal.id),
+        removeModal: this.removeModal.bind(this) //use for remove lastModal by esc keyboard
+      };
+
+      return /*#__PURE__*/_jsx(Popup, {
+        ...props
+      }, modal.id);
+    });
+  }
+  render() {
+    let {
+      modals
+    } = this.state;
+    let {
+      id
+    } = this.props;
+    if (id === 'main') {
+      console.log('render', modals.length);
+    }
+    if (!modals.length) {
+      return null;
+    }
+    let renderModals = this.getModals();
+    return /*#__PURE__*/_jsx(_Fragment, {
+      children: renderModals
+    });
+  }
+}
+function Popup(props) {
+  let {
+    modal,
+    rtl,
+    onClose,
+    isLast,
+    removeModal
+  } = props;
+  let {
+    attrs = {},
+    id,
+    backdrop = {},
+    footer,
+    header,
+    position = 'fullscreen',
+    body,
+    fitHorizontal,
+    getTarget,
+    pageSelector,
+    openRelatedTo,
+    fixStyle = o => o,
+    fitTo
+  } = modal;
+  let [temp] = useState({
+    dom: /*#__PURE__*/createRef(),
+    backdropDom: /*#__PURE__*/createRef(),
+    dui: undefined,
+    isDown: false,
+    isFirstMount: true
+  });
+  let [popoverStyle, setPopoverStyle] = useState({});
+  let [state, setState] = useState(modal.state);
+  async function close() {
+    onClose();
+  }
+  useEffect(() => {
+    return () => {
+      $(window).unbind('click', handleBackClick);
+    };
+  });
+  function updatePopoverStyle() {
+    if (position === 'popover') {
+      let ps = getPopoverStyle();
+      if (JSON.stringify(ps) !== JSON.stringify(popoverStyle)) {
+        setPopoverStyle(ps);
+      }
+    }
+  }
+  useEffect(() => {
+    temp.isFirstMount = false;
+    setTimeout(() => {
+      setPopoverStyle(position === 'popover' ? getPopoverStyle() : {});
+    }, 0);
+    if (getTarget) {
+      temp.dui = 'a' + Math.round(Math.random() * 10000000);
+      let target = getTarget();
+      target.attr('data-uniq-id', temp.dui);
+    }
+    $(window).unbind('click', handleBackClick);
+    $(window).bind('click', handleBackClick);
+  }, []);
+  function handleBackClick(e) {
+    //در مود پاپاور اگر هر جایی غیر از اینپوت و پاپاور کلیک شد پاپاپ رو ببند
+    if (!temp.dui) {
+      return;
+    }
+    let target = $(e.target);
+    if (position !== 'popover' || target.attr('data-uniq-id') === temp.dui || target.parents(`[data-uniq-id=${temp.dui}]`).length) {
+      return;
+    }
+    close();
+  }
+  function header_node() {
+    if (typeof header !== 'object') {
+      return null;
+    }
+    return /*#__PURE__*/_jsx(ModalHeader, {
+      rtl: rtl,
+      header: header,
+      handleClose: () => close(),
+      state: state,
+      setState: value => setState(value)
+    });
+  }
+  function body_node() {
+    let p = {
+      body,
+      handleClose: () => close(),
+      state,
+      setState: value => setState(value),
+      updatePopoverStyle
+    };
+    return /*#__PURE__*/_jsx(ModalBody, {
+      ...p
+    });
+  }
+  function footer_node() {
+    let handleClose = close;
+    let props = {
+      footer,
+      handleClose,
+      state,
+      setState
+    };
+    return /*#__PURE__*/_jsx(ModalFooter, {
+      ...props
+    });
+  }
+  function getBackDropClassName() {
+    let className = 'aio-popup-backdrop';
+    if (temp.isFirstMount) {
+      className += ' not-mounted';
+    }
+    if (backdrop && backdrop.attrs && backdrop.attrs.className) {
+      className += ' ' + backdrop.attrs.className;
+    }
+    className += ` aio-popup-position-${position}`;
+    className += rtl ? ' rtl' : ' ltr';
+    return className;
+  }
+  function backClick(e) {
+    if (temp.isDown) {
+      return;
+    }
+    e.stopPropagation();
+    let target = $(e.target);
+    if (backdrop && backdrop.close === false) {
+      return;
+    }
+    if (!target.hasClass('aio-popup-backdrop')) {
+      return;
+    }
+    close();
+  }
+  function getPopoverStyle() {
+    if (!getTarget) {
+      return {};
+    }
+    let target = getTarget();
+    if (!target || !target.length) {
+      return {};
+    }
+    let popup = $(temp.dom.current);
+    let style = Align({
+      dom: popup,
+      target,
+      fitHorizontal,
+      fixStyle,
+      pageSelector,
+      openRelatedTo,
+      fitTo,
+      attrs,
+      rtl
+    });
+    return {
+      ...style,
+      position: 'absolute'
+    };
+  }
+  function keyDown(e) {
+    if (!isLast) {
+      return;
+    }
+    let code = e.keyCode;
+    if (code === 27) {
+      removeModal();
+    }
+  }
+  function mouseUp() {
+    setTimeout(() => temp.isDown = false, 0);
+  }
+  function mouseDown(e) {
+    $(window).unbind('mouseup', mouseUp);
+    $(window).bind('mouseup', mouseUp);
+    temp.isDown = true;
+  }
+  function getClassName() {
+    let className = 'aio-popup';
+    if (temp.isFirstMount) {
+      className += ' not-mounted';
+      temp.isFirstMount = false;
+    }
+    className += rtl ? ' rtl' : ' ltr';
+    if (attrs.className) {
+      className += ' ' + attrs.className;
+    }
+    return className;
+  }
+  let backdropAttrs = backdrop ? backdrop.attrs : {};
+  let backdropProps = {
+    ...backdropAttrs,
+    ['data-id']: id,
+    className: getBackDropClassName(),
+    onClick: backdrop === false ? undefined : backdrop.close === false ? undefined : e => backClick(e)
+  };
+  let style = {
+    ...popoverStyle,
+    ...attrs.style,
+    flex: 'none'
+  };
+  let ev = "ontouchstart" in document.documentElement ? 'onTouchStart' : 'onMouseDown';
+  let p = {
+    ...attrs,
+    ref: temp.dom,
+    "data-uniq-id": temp.dui,
+    [ev]: mouseDown,
+    className: getClassName(),
+    style: {
+      ...style,
+      display: 'flex',
+      flexDirection: 'column'
+    }
+  };
+  return /*#__PURE__*/_jsx("div", {
+    ...backdropProps,
+    ref: temp.backdropDom,
+    onKeyDown: keyDown,
+    tabIndex: 0,
+    children: /*#__PURE__*/_jsxs("div", {
+      ...p,
+      children: [header_node(), " ", body_node(), " ", footer_node()]
+    })
+  });
+}
+function ModalHeader(props) {
+  let {
+    rtl,
+    header,
+    handleClose,
+    state,
+    setState
+  } = props;
+  if (typeof header !== 'object') {
+    return null;
+  }
+  let {
+    title,
+    subtitle,
+    buttons = [],
+    onClose,
+    backButton,
+    attrs = {}
+  } = header;
+  function close(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    if (typeof onClose === 'function') {
+      onClose({
+        state,
+        setState
+      });
+    } else {
+      handleClose();
+    }
+  }
+  function backButton_node() {
+    if (!backButton || onClose === false) {
+      return null;
+    }
+    let path, style;
+    if (rtl) {
+      path = mdiChevronRight;
+      style = {
+        marginLeft: 12
+      };
+    } else {
+      path = mdiChevronLeft;
+      style = {
+        marginRight: 12
+      };
+    }
+    return /*#__PURE__*/_jsx("div", {
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        ...style
+      },
+      onClick: e => close(e),
+      children: /*#__PURE__*/_jsx(Icon, {
+        path: path,
+        size: 1
+      })
+    });
+  }
+  function title_node() {
+    if (!title) {
+      return null;
+    }
+    if (!subtitle) {
+      return /*#__PURE__*/_jsx("div", {
+        className: "aio-popup-title",
+        style: {
+          display: 'flex',
+          alignItems: 'center',
+          flex: 1
+        },
+        children: title
+      });
+    } else {
+      return /*#__PURE__*/_jsxs("div", {
+        style: {
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          flex: 1
+        },
+        children: [/*#__PURE__*/_jsx("div", {
+          className: "aio-popup-title",
+          children: title
+        }), /*#__PURE__*/_jsx("div", {
+          className: "aio-popup-subtitle",
+          children: subtitle
+        })]
+      });
+    }
+  }
+  function buttons_node() {
+    if (!buttons.length) {
+      return null;
+    }
+    return /*#__PURE__*/_jsx("div", {
+      className: "aio-popup-header-buttons",
+      children: buttons.map(o => button_node(o))
+    });
+  }
+  function button_node(p) {
+    let [text, attrs = {}] = p;
+    let {
+      onClick = () => {},
+      className
+    } = attrs;
+    let Attrs = {
+      ...attrs
+    };
+    Attrs.className = 'aio-popup-header-button' + (className ? ' ' + className : '');
+    Attrs.onClick = () => onClick({
+      close: handleClose,
+      state,
+      setState
+    });
+    return /*#__PURE__*/_jsx("button", {
+      ...Attrs,
+      children: text
+    });
+  }
+  function close_node() {
+    if (backButton || onClose === false) {
+      return null;
+    }
+    return /*#__PURE__*/_jsx("div", {
+      className: "aio-popup-header-close-button",
+      onClick: e => close(e),
+      children: /*#__PURE__*/_jsx(Icon, {
+        path: mdiClose,
+        size: 0.8
+      })
+    });
+  }
+  let className = 'aio-popup-header' + (attrs.className ? ' ' + attrs.className : '');
+  let style = attrs.style;
+  let p = {
+    ...attrs,
+    className,
+    style
+  };
+  return /*#__PURE__*/_jsxs("div", {
+    ...p,
+    children: [backButton_node(), " ", title_node(), " ", buttons_node(), " ", close_node()]
+  });
+}
+function ModalBody(props) {
+  let {
+    handleClose,
+    body,
+    updatePopoverStyle,
+    state = {},
+    setState
+  } = props;
+  let {
+    render,
+    attrs = {}
+  } = body || {};
+  let content = typeof render === 'function' ? render({
+    close: handleClose,
+    state,
+    setState
+  }) : render;
+  useEffect(() => {
+    updatePopoverStyle();
+  }, [content]);
+  return /*#__PURE__*/_jsx("div", {
+    ...attrs,
+    className: 'aio-popup-body aio-popup-scroll' + (attrs.className ? ' ' + attrs.className : ''),
+    children: typeof render === 'function' && content
+  });
+}
+function ModalFooter(props) {
+  let {
+    footer,
+    handleClose,
+    state,
+    setState
+  } = props;
+  if ( /*#__PURE__*/isValidElement(footer)) {
+    return footer;
+  }
+  if (typeof footer !== 'object') {
+    return null;
+  }
+  let {
+    attrs = {},
+    buttons = []
+  } = footer;
+  function buttons_node() {
+    return !buttons.length ? null : buttons.map(o => button_node(o));
+  }
+  function button_node(p) {
+    let [text, attrs = {}] = p;
+    let Attrs = typeof attrs === 'function' ? {
+      ...attrs({
+        state,
+        setState
+      })
+    } : {
+      ...attrs
+    };
+    let {
+      onClick = () => {},
+      className
+    } = Attrs;
+    Attrs.className = 'aio-popup-footer-button' + (className ? ' ' + className : '');
+    Attrs.onClick = () => onClick({
+      close: handleClose,
+      state,
+      setState
+    });
+    return /*#__PURE__*/_jsx("button", {
+      ...Attrs,
+      children: text
+    }, text);
+  }
+  let p = {
+    className: 'aio-popup-footer' + (attrs.className ? ' ' + attrs.className : ''),
+    style: attrs.style
+  };
+  return /*#__PURE__*/_jsx("div", {
+    ...p,
+    children: buttons_node()
+  });
+}
+function Alert(props) {
+  let {
+    icon,
+    type = '',
+    text = '',
+    subtext = '',
+    time = 10,
+    className,
+    closeText = 'بستن',
+    position = 'center'
+  } = props;
+  let $$ = {
+    id: '',
+    time: 0,
+    getId() {
+      return 'aa' + Math.round(Math.random() * 100000000);
+    },
+    getBarRender() {
+      return `<div class='aio-popup-time-bar' style="width:${$$.time}%;"></div>`;
+    },
+    updateBarRender() {
+      $(`.aio-popup-alert-container.${$$.id} .aio-popup-time`).html($$.getBarRender());
+    },
+    getRender() {
+      return `
+      <div class='aio-popup-alert-container not-mounted ${$$.id} aio-popup-alert-container-${position}'>
+        <div class='aio-popup-alert aio-popup-alert-${type}'>
+          <div class='aio-popup-alert-header'>${$$.getIcon()}</div>
+          <div class='aio-popup-alert-body aio-popup-scroll'>
+            <div class='aio-popup-alert-text'>${ReactDOMServer.renderToStaticMarkup(text)}</div>
+            <div class='aio-popup-alert-subtext'>${subtext}</div>
           </div>
           <div class='aio-popup-alert-footer'>
-            <button class='aio-popup-alert-close ${p.id}'>${n}</button>    
+            <button class='aio-popup-alert-close ${$$.id}'>${closeText}</button>
           </div>
           <div class='aio-popup-time'></div>
-        </div>    
+        </div>
       </div>
-    `,close(){d("."+p.id).remove()},getIcon:()=>!1===e?"":e||({error:'<svg viewBox="0 0 24 24" role="presentation" style="width: 4.5rem; height: 4.5rem;"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg>',warning:'<svg viewBox="0 0 24 24" role="presentation" style="width: 4.5rem; height: 4.5rem;"><path d="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"></path></svg>',info:'<svg viewBox="0 0 24 24" role="presentation" style="width: 4.5rem; height: 4.5rem;"><path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path></svg>',success:'<svg viewBox="0 0 24 24" role="presentation" style="width: 4.5rem; height: 4.5rem;"><path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z"></path></svg>'})[o]||"",startTimer(){setTimeout(()=>{if(p.time>=100){p.time=100,p.close();return}p.time+=2,p.updateBarRender(),p.startTimer()},a/50*1e3)},render(){d("body").append(p.getRender()),d("button."+p.id).off("click",p.close),d("button."+p.id).on("click",p.close)}};p.id=p.getId(),p.render(),a&&p.startTimer()}class AIOSnackeBar extends e{constructor(t){super(t),this.state={items:[]},t.getActions({add:this.add.bind(this)})}add(t){let{items:e}=this.state;this.setState({items:e.concat({...t,id:"a"+Math.round(1e9*Math.random())})})}remove(t){let{items:e}=this.state;this.setState({items:e.filter((e,o)=>e.id!==t)})}render(){let{items:t}=this.state,{rtl:e=!1}=this.props;return h(m,{children:t.map((t,o)=>h(SnackebarItem,{rtl:e,...t,index:o,onRemove:t=>this.remove(t)},t.id))})}}class SnackebarItem extends e{constructor(t){super(t),this.state={mounted:!1,timer:0,bottom:0}}componentDidMount(){let{time:t=8}=this.props;setTimeout(()=>this.setState({mounted:!0}),0),setTimeout(()=>this.remove(),1e3*t)}remove(t){let{onRemove:e,id:o}=this.props;this.setState({mounted:!1}),setTimeout(()=>{e(o),"function"==typeof t&&t()},200)}info_svg(){return h("svg",{viewBox:"0 0 24 24",role:"presentation",style:{width:"1.2rem",height:"1.2rem"},children:h("path",{d:"M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z",style:{fill:"currentcolor"}})})}success_svg(){return h("svg",{viewBox:"0 0 24 24",role:"presentation",style:{width:"1.2rem",height:"1.2rem"},children:h("path",{d:"M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z",style:{fill:"currentcolor"}})})}getSvg(t){return"error"===t||"warning"===t||"info"===t?this.info_svg():this.success_svg()}getBottom(t){let e=d(".aio-popup-snakebar-item-container"),o=12;for(let i=0;i<t;i++)o+=e.eq(i).height()+6;return o}render(){let{mounted:t}=this.state,{text:e,index:o,type:i,subtext:s,action:r,time:a,rtl:l,onClose:n}=this.props,p=this.getBottom(o);return h("div",{onClick:!1===n?void 0:()=>this.remove(n),className:"aio-popup-snakebar-item-container"+(t?" mounted":""),style:{bottom:p,direction:l?"rtl":void 0},children:c("div",{className:`aio-popup-snakebar-item aio-popup-snakebar-item-${i}`,children:[h("div",{className:"aio-popup-snakebar-item-icon",children:this.getSvg(i)}),c("div",{className:"aio-popup-snakebar-item-text",children:[h("div",{style:{textAlign:l?"right":"left"},children:e}),!!s&&h("div",{className:"aio-popup-snakebar-item-subtext",children:s})]}),!!r.text&&h("button",{className:"aio-popup-snakebar-item-action",onClick:t=>{t.stopPropagation(),r.onClick(),this.remove()},children:r.text}),h("div",{className:"aio-popup-snakebar-bar",style:{transition:`${a}s linear`,right:l?0:"unset",left:l?"unset":0}})]})})}}function Align(t,e,o={}){let{fitHorizontal:i,style:s,fixStyle:r=t=>t,pageSelector:a,rtl:l}=o,n={getDomLimit(t,e){let o=t.offset(),i=o.left-window.pageXOffset,s=o.top-window.pageYOffset;if(a&&"page"!==e){let r=d(a);try{let{left:l,top:n}=r.offset();i-=l,s-=n}catch{}}let p=t.outerWidth(),h=t.outerHeight(),m=i+p,c=s+h;return{left:i,top:s,right:m,bottom:c,width:p,height:h}},getPageLimit(t){let e=a?d(a):void 0;e=Array.isArray(e)&&0===e.length?void 0:e;let o=window.innerWidth,i=window.innerHeight,s=e?n.getDomLimit(e,"page"):{left:0,top:0,right:o,bottom:i};return s.left<0&&(s.left=0),s.right>o&&(s.right=o),s.top<0&&(s.top=0),s.bottom>i&&(s.bottom=i),s},align(){let o=n.getPageLimit(t),a=n.getDomLimit(e,"target"),p=n.getDomLimit(t,"popover");p.top=a.bottom,p.bottom=p.top+p.height,i?(p.width=a.width,p.left=a.left,p.right=a.left+a.width):l?(p.right=a.right,p.left=p.right-p.width,p.left<o.left&&(p.left=o.left)):(p.left=a.left,p.right=p.left+p.width,p.right>o.right&&(p.left=o.right-p.width)),p.bottom>o.bottom?p.height>a.top-o.top?p.top=o.bottom-p.height:p.top=a.top-p.height:p.top=a.bottom;let d;p.height>o.bottom-o.top&&(p.top=6,p.bottom=void 0,p.height=o.bottom-o.top-12,d="auto");let h={left:p.left,top:p.top,width:p.width,overflowY:d,...s};return r(h,{targetLimit:a,pageLimit:o})}};return n.align()}
+    `;
+    },
+    close() {
+      $$.toggleClass(false);
+      setTimeout(() => $('.' + $$.id).remove(), 200);
+    },
+    getIcon() {
+      if (icon === false) {
+        return '';
+      }
+      return icon || {
+        error: `<svg viewBox="0 0 24 24" role="presentation" style="width: 4.5rem; height: 4.5rem;"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"></path></svg>`,
+        warning: `<svg viewBox="0 0 24 24" role="presentation" style="width: 4.5rem; height: 4.5rem;"><path d="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16"></path></svg>`,
+        info: `<svg viewBox="0 0 24 24" role="presentation" style="width: 4.5rem; height: 4.5rem;"><path d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"></path></svg>`,
+        success: `<svg viewBox="0 0 24 24" role="presentation" style="width: 4.5rem; height: 4.5rem;"><path d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z"></path></svg>`
+      }[type] || '';
+    },
+    startTimer() {
+      setTimeout(() => {
+        if ($$.time >= 100) {
+          $$.time = 100;
+          $$.close();
+          return;
+        }
+        $$.time += 2;
+        $$.updateBarRender();
+        $$.startTimer();
+      }, time / 50 * 1000);
+    },
+    toggleClass(mount) {
+      let dom = $(`.${$$.id}`);
+      if (mount) {
+        setTimeout(() => dom.removeClass('not-mounted'), 0);
+      } else {
+        dom.addClass('not-mounted');
+      }
+    },
+    render() {
+      $('body').append($$.getRender());
+      $('button.' + $$.id).off('click', $$.close);
+      $('button.' + $$.id).on('click', $$.close);
+      $$.toggleClass(true);
+    }
+  };
+  $$.id = $$.getId();
+  $$.render();
+  if (time) {
+    $$.startTimer();
+  }
+}
+class Snackebar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: []
+    };
+    props.getActions({
+      add: this.add.bind(this)
+    });
+  }
+  add(item) {
+    let {
+      items
+    } = this.state;
+    let newItems = [...items, {
+      ...item,
+      id: 'a' + Math.round(Math.random() * 1000000000)
+    }];
+    this.setState({
+      items: newItems
+    });
+  }
+  remove(id) {
+    let {
+      items
+    } = this.state;
+    let newItems = items.filter((o, i) => o.id !== id);
+    this.setState({
+      items: newItems
+    });
+  }
+  render() {
+    let {
+      items
+    } = this.state;
+    let {
+      rtl
+    } = this.props;
+    return /*#__PURE__*/_jsx(_Fragment, {
+      children: items.map((item, i) => {
+        let p = {
+          rtl,
+          item,
+          index: i,
+          onRemove: id => this.remove(id)
+        };
+        return /*#__PURE__*/_createElement(SnackebarItem, {
+          ...p,
+          key: item.id
+        });
+      })
+    });
+  }
+}
+function SnackebarItem(props) {
+  let {
+    item,
+    onRemove,
+    index,
+    rtl
+  } = props;
+  let {
+    time = 8,
+    id,
+    text,
+    type,
+    subtext,
+    action,
+    onClose,
+    verticalAlign = 'end',
+    horizontalAlign = 'center',
+    icon,
+    attrs = {}
+  } = item;
+  if (verticalAlign !== 'start' && verticalAlign !== 'end') {
+    verticalAlign = 'end';
+    console.error('aio-popup error => snackebar item .verticalAlign should be "start" or "end"');
+  }
+  if (horizontalAlign !== 'start' && horizontalAlign !== 'end' && horizontalAlign !== 'center') {
+    horizontalAlign = 'center';
+    console.error('aio-popup error => snackebar item .horizontalAlign should be "start" or "end" or "center"');
+  }
+  let [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setTimeout(() => setMounted(true), 0);
+    setTimeout(() => remove(), time * 1000);
+  }, []);
+  function remove() {
+    setMounted(false);
+    setTimeout(() => {
+      onRemove(id);
+    }, 200);
+  }
+  function info_svg() {
+    return /*#__PURE__*/_jsx("svg", {
+      viewBox: "0 0 24 24",
+      role: "presentation",
+      style: {
+        width: '1.2rem',
+        height: '1.2rem'
+      },
+      children: /*#__PURE__*/_jsx("path", {
+        d: "M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z",
+        style: {
+          fill: 'currentcolor'
+        }
+      })
+    });
+  }
+  function success_svg() {
+    return /*#__PURE__*/_jsx("svg", {
+      viewBox: "0 0 24 24",
+      role: "presentation",
+      style: {
+        width: '1.2rem',
+        height: '1.2rem'
+      },
+      children: /*#__PURE__*/_jsx("path", {
+        d: "M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M12 20C7.59 20 4 16.41 4 12S7.59 4 12 4 20 7.59 20 12 16.41 20 12 20M16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z",
+        style: {
+          fill: 'currentcolor'
+        }
+      })
+    });
+  }
+  function getSvg(type) {
+    return type === 'error' || type === 'warning' || type === 'info' ? info_svg() : success_svg();
+  }
+  function getOffsetStyle(index) {
+    let els = $('.aio-popup-snackebar-item-container'),
+      sum = {
+        start: 12,
+        end: 12
+      };
+    for (let i = 0; i < index; i++) {
+      let dom = els.eq(i);
+      let height = dom.height() + 6;
+      let va = dom.attr('data-vertical-align');
+      sum[va] += height;
+    }
+    return {
+      [verticalAlign === 'start' ? 'top' : 'bottom']: sum[verticalAlign]
+    };
+  }
+  function text_node() {
+    return /*#__PURE__*/_jsxs("div", {
+      className: "aio-popup-snackebar-item-text",
+      children: [/*#__PURE__*/_jsx("div", {
+        className: "aio-popup-snackebar-item-uptext",
+        children: text
+      }), !!subtext && /*#__PURE__*/_jsx("div", {
+        className: "aio-popup-snackebar-item-subtext",
+        children: subtext
+      })]
+    });
+  }
+  function container_node() {
+    let className = 'aio-popup-snackebar-item-container';
+    className += ` aio-popup-snackebar-item-container-horizontal-align-${horizontalAlign}`;
+    if (mounted) {
+      className += ' mounted';
+    }
+    if (rtl) {
+      className += ' rtl';
+    }
+    let style = getOffsetStyle(index);
+    let p = {
+      'data-vertical-align': verticalAlign,
+      className,
+      style,
+      onClick: onClose === false ? undefined : () => remove()
+    };
+    return /*#__PURE__*/_jsx("div", {
+      ...p,
+      children: item_node()
+    });
+  }
+  function item_node() {
+    let className = 'aio-popup-snackebar-item';
+    className += ` aio-popup-snackebar-item-${type}`;
+    if (attrs.className) {
+      className += ` ${attrs.className}`;
+    }
+    let p = {
+      ...attrs,
+      className,
+      style: attrs.style
+    };
+    return /*#__PURE__*/_jsxs("div", {
+      ...p,
+      children: [icon_node(), " ", text_node(), " ", action_node(), " ", bar_node(), "  "]
+    });
+  }
+  function bar_node() {
+    return /*#__PURE__*/_jsx("div", {
+      className: "aio-popup-snackebar-bar",
+      style: {
+        transition: `${time}s linear`
+      }
+    });
+  }
+  function action_node() {
+    if (!action || !action.text) {
+      return null;
+    }
+    let p = {
+      className: 'aio-popup-snackebar-item-action',
+      onClick: e => {
+        e.stopPropagation();
+        action.onClick();
+        remove();
+      }
+    };
+    return /*#__PURE__*/_jsx("button", {
+      ...p,
+      children: action.text
+    });
+  }
+  function icon_node() {
+    return /*#__PURE__*/_jsx("div", {
+      className: `aio-popup-snackebar-item-icon`,
+      children: !!icon ? icon : getSvg(type)
+    });
+  }
+  return container_node();
+}
+//id,onClose,backdrop,getTarget,position,fixStyle,attrs,fitHorizontal,pageSelector,rtl,body
+
+function Align(p) {
+  let {
+    dom,
+    target,
+    fitHorizontal,
+    fixStyle = o => o,
+    attrs = {},
+    fitTo,
+    pageSelector,
+    rtl,
+    openRelatedTo
+  } = p;
+  let $$ = {
+    getDomLimit(dom, type) {
+      if (fitTo && type === 'popover') {
+        let parent = target.parents(fitTo); //notice be jaye target dom
+        if (parent.length) {
+          let {
+            left,
+            top
+          } = parent.offset();
+          let width = parent.width();
+          let height = parent.height();
+          let right = left + width;
+          let bottom = top + height;
+          return {
+            left,
+            top,
+            right,
+            bottom,
+            width,
+            height
+          };
+        }
+      }
+      let offset = dom.offset();
+      let left = offset.left - window.pageXOffset;
+      let top = offset.top - window.pageYOffset;
+      if (pageSelector && type !== 'page') {
+        let page = $(pageSelector);
+        try {
+          let {
+            left: l,
+            top: t
+          } = page.offset();
+          left -= l;
+          top -= t;
+        } catch {}
+      }
+      let width = dom.outerWidth();
+      let height = dom.outerHeight();
+      let right = left + width;
+      let bottom = top + height;
+      return {
+        left,
+        top,
+        right,
+        bottom,
+        width,
+        height
+      };
+    },
+    getPageLimit() {
+      let page = pageSelector ? $(pageSelector) : undefined;
+      page = Array.isArray(page) && page.length === 0 ? undefined : page;
+      let bodyWidth = window.innerWidth;
+      let bodyHeight = window.innerHeight;
+      let pageLimit = page ? $$.getDomLimit(page, 'page') : {
+        left: 0,
+        top: 0,
+        right: bodyWidth,
+        bottom: bodyHeight
+      };
+      if (pageLimit.left < 0) {
+        pageLimit.left = 0;
+      }
+      if (pageLimit.right > bodyWidth) {
+        pageLimit.right = bodyWidth;
+      }
+      if (pageLimit.top < 0) {
+        pageLimit.top = 0;
+      }
+      if (pageLimit.bottom > bodyHeight) {
+        pageLimit.bottom = bodyHeight;
+      }
+      return pageLimit;
+    },
+    getRelatedToLmit() {
+      if (!openRelatedTo) {
+        return;
+      }
+      let elem = dom.parents(openRelatedTo);
+      if (!elem.length) {
+        return;
+      }
+      let offset = elem.offset();
+      let left = offset.left - window.pageXOffset;
+      let top = offset.top - window.pageYOffset;
+      let width = elem.outerWidth();
+      let height = elem.outerHeight();
+      let right = left + width;
+      let bottom = top + height;
+      return {
+        left,
+        top,
+        right,
+        bottom,
+        width,
+        height
+      };
+    },
+    align() {
+      let pageLimit = $$.getPageLimit();
+      let targetLimit = $$.getDomLimit(target, 'target');
+      let domLimit = $$.getDomLimit(dom, 'popover');
+      let overflowY;
+      if (!fitTo) {
+        domLimit.top = targetLimit.bottom;
+        domLimit.bottom = domLimit.top + domLimit.height;
+        if (fitHorizontal) {
+          domLimit.width = targetLimit.width;
+          domLimit.left = targetLimit.left;
+          domLimit.right = targetLimit.left + targetLimit.width;
+        } else {
+          let relatedToLimit = $$.getRelatedToLmit();
+          let parentLimit = relatedToLimit || pageLimit;
+          //اگر راست به چپ باید باشد
+          if (rtl) {
+            //راست المان را با راست هدف ست کن
+            domLimit.right = targetLimit.right;
+            //چپ المان را بروز رسانی کن
+            domLimit.left = domLimit.right - domLimit.width;
+            //اگر المان از سمت چپ از صفحه بیرون زد سمت چپ المان را با سمت چپ صفحه ست کن
+            if (domLimit.left < parentLimit.left) {
+              domLimit.left = parentLimit.left;
+            }
+          }
+          //اگر چپ به راست باید باشد
+          else {
+            //چپ المان را با چپ هدف ست کن
+            domLimit.left = targetLimit.left;
+            //راست المان را بروز رسانی کن
+            domLimit.right = domLimit.left + domLimit.width;
+            //اگر المان از سمت راست صفحه بیرون زد سمت چپ المان را با پهنای المان ست کن
+            if (domLimit.right > parentLimit.right) {
+              domLimit.left = parentLimit.right - domLimit.width;
+            }
+          }
+        }
+        //اگر المان از سمت پایین صفحه بیرون زد
+        if (domLimit.bottom > pageLimit.bottom) {
+          if (domLimit.height > targetLimit.top - pageLimit.top) {
+            domLimit.top = pageLimit.bottom - domLimit.height;
+          } else {
+            domLimit.top = targetLimit.top - domLimit.height;
+          }
+        } else {
+          domLimit.top = targetLimit.bottom;
+        }
+        if (domLimit.height > pageLimit.bottom - pageLimit.top) {
+          domLimit.top = 6;
+          domLimit.bottom = undefined;
+          domLimit.height = pageLimit.bottom - pageLimit.top - 12;
+          overflowY = 'auto';
+        }
+      }
+      let finalStyle = {
+        left: domLimit.left,
+        top: domLimit.top,
+        width: domLimit.width,
+        height: !!fitTo ? domLimit.height : undefined,
+        overflowY,
+        ...attrs.style
+      };
+      return fixStyle(finalStyle, {
+        targetLimit,
+        pageLimit
+      });
+    }
+  };
+  return $$.align();
+}
