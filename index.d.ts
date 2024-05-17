@@ -1,41 +1,42 @@
-import React from 'react';
+import React, { FC } from 'react';
 import './index.css';
 export type AP_props = {
     rtl?: boolean;
     id?: string;
 };
 export type AP_position = 'fullscreen' | 'center' | 'popover' | 'left' | 'right' | 'top' | 'bottom';
-export type AP_header = {
+export type AP_attrsKey = 'backdrop' | 'modal' | 'header' | 'body' | 'footer';
+export type AP_header = ((p: {
+    close: () => void;
+    state: any;
+    setState: any;
+}) => React.ReactNode) | {
     title?: string;
     subtitle?: string;
-    buttons?: AP_modal_button[];
+    before?: React.ReactNode;
+    after?: React.ReactNode;
     onClose?: boolean | ((p: {
         state: any;
         setState: (state: any) => void;
     }) => void);
-    backButton?: () => void;
     attrs?: any;
 };
-export type AP_backdrop = false | {
-    attrs?: any;
-    close?: boolean;
-};
-export type AP_body = {
-    render?: (p: {
-        close: () => void;
-        state?: any;
-        setState?: (state: any) => void;
-    }) => React.ReactNode;
-    attrs?: any;
-};
-export type AP_footer = React.ReactNode | {
-    attrs?: any;
-    buttons?: AP_modal_button[];
-};
+export type AP_body = (p: {
+    close: () => void;
+    state?: any;
+    setState?: (state: any) => void;
+}) => React.ReactNode;
+export type AP_footer = (p: {
+    state: any;
+    setState: (v: any) => void;
+    close: () => void;
+}) => React.ReactNode;
+type AP_setAttrs = (mode: AP_attrsKey) => any;
 export type AP_modal = {
     getTarget?: () => any;
     pageSelector?: string;
-    openRelatedTo?: string;
+    limitTo?: string;
+    maxHeight?: number | 'string';
     fixStyle?: (o: any, p: {
         targetLimit: any;
         pageLimit: any;
@@ -45,14 +46,13 @@ export type AP_modal = {
     id?: string;
     onClose?: boolean | (() => void);
     position?: AP_position;
-    attrs?: any;
-    backdrop?: AP_backdrop;
     header?: AP_header;
     state?: any;
     footer?: AP_footer;
     body?: AP_body;
     animate?: boolean;
     fitHorizontal?: boolean;
+    setAttrs?: AP_setAttrs;
 };
 export type AP_alert = {
     icon?: false | React.ReactNode;
@@ -89,7 +89,7 @@ export type AP_confirm = {
     canselText?: string;
     onSubmit?: () => Promise<boolean>;
     onCansel?: () => void;
-    attrs?: any;
+    setAttrs?: AP_setAttrs;
 };
 export type AP_prompt = {
     title?: string;
@@ -99,42 +99,7 @@ export type AP_prompt = {
     canselText?: string;
     onSubmit?: (text: string) => Promise<boolean>;
     onCansel?: () => void;
-    attrs?: any;
-};
-export type AP_modal_button = [text: React.ReactNode, attrs?: any | ((p: {
-    state: any;
-    setState: (v: any) => void;
-}) => any)];
-export type AP_Popups = {
-    getActions: (p: {
-        removeModal: (p?: string, animate?: boolean) => void;
-        addModal: (p: AP_modal) => void;
-        getModals: () => AP_modal[];
-    }) => void;
-    rtl: boolean;
-    id?: string;
-};
-export type AP_Popup = {
-    modal: AP_modal;
-    rtl: boolean;
-    index: number;
-    isLast: boolean;
-    onClose: () => void;
-    removeModal: (p?: string, animate?: boolean) => void;
-};
-export type AP_ModalHeader = {
-    rtl: boolean;
-    header: AP_header;
-    handleClose: () => void;
-    state: any;
-    setState: (state: any) => void;
-};
-export type AP_ModalBody = {
-    body?: AP_body;
-    handleClose: () => void;
-    updatePopoverStyle: () => void;
-    state: any;
-    setState: (state: any) => void;
+    setAttrs?: AP_setAttrs;
 };
 export type AP_Snackebar = {
     getActions: (p: {
@@ -153,14 +118,18 @@ export default class AIOPopup {
     render: () => React.ReactNode;
     addModal: (p: AP_modal) => void;
     addAlert: (p: AP_alert) => void;
-    removeModal: (arg?: string, animate?: boolean) => void;
-    _removeModal: (arg?: string, animate?: boolean) => void;
+    removeModal: (arg?: string) => void;
     addSnackebar: (p: AP_snackebar) => void;
     getModals: () => AP_modal[];
-    _getModals: () => AP_modal[];
     addConfirm: (p: AP_confirm) => void;
     addPrompt: (p: AP_prompt) => void;
     popupId?: string;
-    isRenderCalled: boolean;
+    popupsRef: React.RefObject<typeof Popups>;
     constructor(obj?: AP_props);
 }
+type AP_Popups = {
+    ref: any;
+    rtl: boolean;
+};
+declare const Popups: FC<AP_Popups>;
+export {};
