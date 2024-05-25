@@ -64,6 +64,7 @@ export type AP_alert = {
     className?: string;
     closeText?: string;
     animate?: boolean;
+    onClose?: boolean | (() => void);
 };
 export type AP_snackebar = {
     id?: string;
@@ -78,7 +79,7 @@ export type AP_snackebar = {
     type: 'success' | 'error' | 'warning' | 'info';
     verticalAlign?: 'start' | 'end';
     horizontalAlign?: 'start' | 'center' | 'end';
-    onClose?: false;
+    onClose?: boolean | (() => void);
     attrs?: any;
 };
 export type AP_confirm = {
