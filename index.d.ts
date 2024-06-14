@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import './index.css';
 export type AP_props = {
     rtl?: boolean;
@@ -10,11 +10,11 @@ export type AP_header = ((p: {
     close: () => void;
     state: any;
     setState: any;
-}) => React.ReactNode) | {
+}) => ReactNode) | {
     title?: string;
     subtitle?: string;
-    before?: React.ReactNode;
-    after?: React.ReactNode;
+    before?: ReactNode;
+    after?: ReactNode;
     onClose?: boolean | ((p: {
         state: any;
         setState: (state: any) => void;
@@ -25,12 +25,12 @@ export type AP_body = (p: {
     close: () => void;
     state?: any;
     setState?: (state: any) => void;
-}) => React.ReactNode;
+}) => ReactNode;
 export type AP_footer = (p: {
     state: any;
     setState: (v: any) => void;
     close: () => void;
-}) => React.ReactNode;
+}) => ReactNode;
 type AP_setAttrs = (mode: AP_attrsKey) => any;
 export type AP_modal = {
     getTarget?: () => any;
@@ -55,10 +55,10 @@ export type AP_modal = {
     setAttrs?: AP_setAttrs;
 };
 export type AP_alert = {
-    icon?: false | React.ReactNode;
+    icon?: false | ReactNode;
     position?: AP_position;
     type: 'success' | 'error' | 'warning' | 'info';
-    text?: React.ReactNode;
+    text?: ReactNode;
     subtext?: string;
     time?: number;
     className?: string;
@@ -70,7 +70,7 @@ export type AP_snackebar = {
     id?: string;
     text: string;
     subtext?: string;
-    icon?: React.ReactNode;
+    icon?: ReactNode;
     time?: number;
     action?: {
         text: string;
@@ -82,10 +82,20 @@ export type AP_snackebar = {
     onClose?: boolean | (() => void);
     attrs?: any;
 };
+export type AP_highlight = {
+    dom: any;
+    html: ReactNode;
+    onClick?: () => void;
+    mouseAccess?: boolean;
+    attrs?: any;
+    padding?: number;
+    easing?: number | AP_easing;
+    duration?: number;
+};
 export type AP_confirm = {
     title?: string;
     subtitle?: string;
-    text?: React.ReactNode;
+    text?: ReactNode;
     submitText?: string;
     canselText?: string;
     onSubmit?: () => Promise<boolean>;
@@ -116,8 +126,10 @@ export type AP_SnackebarItem = {
 };
 export default class AIOPopup {
     rtl?: boolean;
-    render: () => React.ReactNode;
+    render: () => ReactNode;
     addModal: (p: AP_modal) => void;
+    addHighlight: (p: AP_highlight) => void;
+    removeHighlight: () => void;
     addAlert: (p: AP_alert) => void;
     removeModal: (arg?: string) => void;
     addSnackebar: (p: AP_snackebar) => void;
@@ -126,6 +138,7 @@ export default class AIOPopup {
     addPrompt: (p: AP_prompt) => void;
     popupId?: string;
     popupsRef: React.RefObject<typeof Popups>;
+    highlightRef: React.RefObject<typeof Highlight>;
     constructor(obj?: AP_props);
 }
 type AP_Popups = {
@@ -133,4 +146,9 @@ type AP_Popups = {
     rtl: boolean;
 };
 declare const Popups: FC<AP_Popups>;
+type AP_easing = 'linear' | 'easeInQuad' | 'easeInCubic' | 'easeInQuart' | 'easeInQuint' | 'easeInSine' | 'easeInExpo' | 'easeInCirc' | 'easeInBack' | 'easeOutQuad' | 'easeOutCubic' | 'easeOutQuart' | 'easeOutQuint' | 'easeOutSine' | 'easeOutExpo' | 'easeOutCirc' | 'easeOutBack' | 'easeInBounce' | 'easeInOutQuad' | 'easeInOutCubic' | 'easeInOutQuart' | 'easeInOutQuint' | 'easeInOutSine' | 'easeInOutExpo' | 'easeInOutCirc' | 'easeInOutBack' | 'easeInOutBounce' | 'easeOutBounce' | 'easeOutInQuad' | 'easeOutInCubic' | 'easeOutInQuart' | 'easeOutInQuint' | 'easeOutInSine' | 'easeOutInExpo' | 'easeOutInCirc' | 'easeOutInBack' | 'easeOutInBounce';
+type AP_Highlight = {
+    ref: any;
+};
+declare const Highlight: FC<AP_Highlight>;
 export {};
