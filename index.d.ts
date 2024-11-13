@@ -41,7 +41,6 @@ export type AP_modal = {
         targetLimit: any;
         pageLimit: any;
     }) => any;
-    fitTo?: string;
     rtl?: boolean;
     id?: string;
     onClose?: boolean | (() => void);
